@@ -30,13 +30,13 @@ wait_for_rpc_to_be_available() {
 fund_account_on_l1() {
     name="$1"
     address="$2"
-    echo_ts "Funding $name account"
-    cast send \
-        --rpc-url "{{.l1_rpc_url}}" \
-        --mnemonic "{{.l1_preallocated_mnemonic}}" \
-        --value "{{.l1_funding_amount}}" \
-        --legacy \
-        "$address"
+    echo_ts "Funding $name account $address"
+    #cast send \
+    #    --rpc-url "{{.l1_rpc_url}}" \
+    #    --mnemonic "{{.l1_preallocated_mnemonic}}" \
+    #    --value "{{.l1_funding_amount}}" \
+    #    --legacy \
+    #    "$address"
 }
 
 deploy_rollup_manager() {

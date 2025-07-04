@@ -30,7 +30,7 @@ def new(plan):
 def fund(plan, address, rpc_url, funder_private_key, value="0.05ether"):
     plan.run_sh(
         name="address-funder",
-        description="Funding address on network {}".format(rpc_url),
+        description="Funding address {} on network {}".format(address, rpc_url),
         image=constants.TOOLBOX_IMAGE,
         run="cast send --legacy --rpc-url ${RPC_URL} --private-key ${PRIVATE_KEY} --value ${VALUE} ${ADDRESS}",
         env_vars={

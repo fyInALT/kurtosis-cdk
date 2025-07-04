@@ -27,12 +27,12 @@ function deploy_create2() {
         return
     fi
 
-    cast send \
-         --legacy \
-         --rpc-url "{{.l1_rpc_url}}" \
-         --mnemonic "{{.l1_preallocated_mnemonic}}" \
-         --value "$gas_cost" \
-         "$signer_address"
+    # cast send \
+    #     --legacy \
+    #     --rpc-url "{{.l1_rpc_url}}" \
+    #     --mnemonic "{{.l1_preallocated_mnemonic}}" \
+    #     --value "$gas_cost" \
+    #     "$signer_address"
     cast publish --rpc-url "{{.l1_rpc_url}}" "$transaction"
     deployer_code=$(cast code --rpc-url "{{.l1_rpc_url}}" "$deployer_address")
     if [[ $deployer_code == "0x" ]]; then

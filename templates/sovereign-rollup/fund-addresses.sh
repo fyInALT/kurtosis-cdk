@@ -51,13 +51,19 @@ for address in "${addresses[@]}"; do
     fi
 
     echo "Funding $address with $L2_FUNDING_AMOUNT from $private_key and $L1_PREALLOCATED_MNEMONIC"
-    if ! cast send \
-        --private-key "$private_key" --legacy \
-        --rpc-url "$RPC_URL" \
-        --value "$L2_FUNDING_AMOUNT" \
-        "$address" >/dev/null 2>&1; then
-        echo "Error: Failed to fund $address"
+    ###
+    if [[ "$RPC_URL" == "http://op-el-1-op-geth-op-node-001:8545" ]]; then
+        if ! cast send \
+            --private-key "$private_key" --legacy \
+            --rpc-url "$RPC_URL" \
+            --value "$L2_FUNDING_AMOUNT" \
+            "$address" >/dev/null 2>&1; then
+            echo "Error: Failed to fund $address"
+        else
+            echo "Successfully funded $address"
+        fi
     else
-        echo "Successfully funded $address"
+        echo "Skip fund in layer1"
     fi
+    ###
 done

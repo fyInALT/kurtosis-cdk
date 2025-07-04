@@ -89,12 +89,13 @@ def _get_l2_bridge_address(
 
 def _generate_new_funded_l1_l2_wallet(plan, funder_private_key, l1_rpc_url, l2_rpc_url):
     wallet = wallet_module.new(plan)
-    wallet_module.fund(
-        plan,
-        address=wallet.address,
-        rpc_url=l1_rpc_url,
-        funder_private_key=funder_private_key,
-    )
+    plan.print("skip fund l1 {}".format(wallet.address))
+    #wallet_module.fund(
+    #    plan,
+    #    address=wallet.address,
+    #    rpc_url=l1_rpc_url,
+    #    funder_private_key=funder_private_key,
+    #)
     wallet_module.fund(
         plan,
         address=wallet.address,
