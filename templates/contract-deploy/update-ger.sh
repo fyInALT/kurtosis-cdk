@@ -35,4 +35,4 @@ cast call --rpc-url "$l1_rpc_url" "$bridge_address" "$bridge_sig" "$destination_
 
 # Publish the actual transaction!
 echo "Publishing the bridge tx..."
-cast send --rpc-url "$l1_rpc_url" --private-key "$private_key" "$bridge_address" "$bridge_sig" "$destination_net" "$destination_addr" "$amount" "$token" "$update_ger" "$permit_data"
+cast send --rpc-url "$l1_rpc_url" --legacy --private-key "$private_key" "$bridge_address" "$bridge_sig" "$destination_net" "$destination_addr" "$amount" "$token" "$update_ger" "$permit_data"

@@ -40,6 +40,8 @@ fi
 # Fund addresses
 IFS=';' read -ra addresses <<<"$ADDRESSES_TO_FUND"
 
+echo "Funding in $RPC_URL from $private_key and $L1_PREALLOCATED_MNEMONIC from $(cast wallet address --private-key $private_key)"
+
 # Validate addresses and fund them
 for address in "${addresses[@]}"; do
     # Basic address validation (ensure it’s a valid Ethereum address)
@@ -48,9 +50,9 @@ for address in "${addresses[@]}"; do
         continue
     fi
 
-    echo "Funding $address with $L2_FUNDING_AMOUNT"
+    echo "Funding $address with $L2_FUNDING_AMOUNT from $private_key and $L1_PREALLOCATED_MNEMONIC"
     if ! cast send \
-        --private-key "$private_key" \
+        --private-key "$private_key" --legacy \
         --rpc-url "$RPC_URL" \
         --value "$L2_FUNDING_AMOUNT" \
         "$address" >/dev/null 2>&1; then

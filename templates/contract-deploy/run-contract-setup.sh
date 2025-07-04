@@ -16,7 +16,7 @@ echo_ts() {
 wait_for_rpc_to_be_available() {
     counter=0
     max_retries=20
-    until cast send --rpc-url "{{.l1_rpc_url}}" --mnemonic "{{.l1_preallocated_mnemonic}}" --value 0 "{{.zkevm_l2_sequencer_address}}" &> /dev/null; do
+    until cast send --rpc-url "{{.l1_rpc_url}}" --mnemonic "{{.l1_preallocated_mnemonic}}" --value 0 "{{.zkevm_l2_sequencer_address}}" --legacy &> /dev/null; do
         ((counter++))
         echo_ts "Can't send L1 transfers yet... Retrying ($counter)..."
         if [[ $counter -ge $max_retries ]]; then
@@ -35,6 +35,7 @@ fund_account_on_l1() {
         --rpc-url "{{.l1_rpc_url}}" \
         --mnemonic "{{.l1_preallocated_mnemonic}}" \
         --value "{{.l1_funding_amount}}" \
+        --legacy \
         "$address"
 }
 
@@ -281,6 +282,7 @@ if [[ $is_first_rollup -eq 1 ]]; then
     cast send \
          --private-key "{{.zkevm_l2_admin_private_key}}" \
          --rpc-url "{{.l1_rpc_url}}" \
+         --legacy \
          "$(jq -r '.polygonRollupManagerAddress' combined.json)" \
          'grantRole(bytes32,address)' \
          "0x084e94f375e9d647f87f5b2ceffba1e062c70f6009fdbcf80291e803b5c9edd4" "{{.zkevm_l2_agglayer_address}}"
@@ -314,6 +316,7 @@ cast send \
 echo_ts "Setting the data availability committee"
 cast send \
     --private-key "{{.zkevm_l2_admin_private_key}}" \
+    --legacy \
     --rpc-url "{{.l1_rpc_url}}" \
     "$(jq -r '.polygonDataCommitteeAddress' combined.json)" \
     'function setupCommittee(uint256 _requiredAmountOfSignatures, string[] urls, bytes addrsBytes) returns()' \
@@ -324,6 +327,7 @@ echo_ts "Setting the data availability protocol"
 cast send \
     --private-key "{{.zkevm_l2_admin_private_key}}" \
     --rpc-url "{{.l1_rpc_url}}" \
+    --legacy \
     "$(jq -r '.rollupAddress' combined.json)" \
     'setDataAvailabilityProtocol(address)' \
     "$(jq -r '.polygonDataCommitteeAddress' combined.json)"
@@ -340,6 +344,7 @@ cast send \
     --rpc-url "{{.l1_rpc_url}}" \
     --mnemonic "{{.l1_preallocated_mnemonic}}" \
     --value "0.01ether" \
+    --legacy \
     "$signer_address"
 cast publish --rpc-url "{{.l1_rpc_url}}" "$transaction"
 if [[ $(cast code --rpc-url "{{.l1_rpc_url}}" $deployer_address) == "0x" ]]; then

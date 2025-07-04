@@ -1,6 +1,7 @@
 # This args-file deploys the OP Succinct chain.
 deployment_stages:
   deploy_op_succinct: true
+  deploy_l1: false
 
 args:
   consensus_contract_type: fep

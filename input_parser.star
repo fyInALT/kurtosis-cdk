@@ -187,20 +187,21 @@ DEFAULT_L1_ARGS = {
     # The L1 engine to use, either "geth" or "anvil".
     "l1_engine": "geth",
     # The L1 network identifier.
-    "l1_chain_id": 271828,
+    "l1_chain_id": 31337,
     # This mnemonic will:
     # a) be used to create keystores for all the types of validators that we have, and
     # b) be used to generate a CL genesis.ssz that has the children validator keys already
     # preregistered as validators
-    "l1_preallocated_mnemonic": "giant issue aisle success illegal bike spike question tent bar rely arctic volcano long crawl hungry vocal artwork sniff fantasy very lucky have athlete",
+    # 0xbf7Dd28Bb515B578D13ddd09d554450a4977Ef39
+    "l1_preallocated_mnemonic": "illness busy since rocket twenty normal win trumpet movie shoe column undo",
     # cast wallet private-key --mnemonic $l1_preallocated_mnemonic
-    "l1_preallocated_private_key": "0xbcdf20249abf0ed6d944c0288fad489e33f66b3960d9e6229c1cd214ed3bbe31",
+    "l1_preallocated_private_key": "0x34daaa6870164efbb1df1615e3074623f1b9644ba6889ba2ed98b129b525f66b",
     # The L1 HTTP RPC endpoint.
-    "l1_rpc_url": "http://el-1-geth-lighthouse:8545",
+    "l1_rpc_url": "http://10.1.1.39:8545",
     # The L1 WS RPC endpoint.
-    "l1_ws_url": "ws://el-1-geth-lighthouse:8546",
+    "l1_ws_url": "ws://10.1.1.39:8546",
     # The L1 concensus layer RPC endpoint.
-    "l1_beacon_url": "http://cl-1-lighthouse-geth:4000",
+    "l1_beacon_url": "http://10.1.1.39:3500",
     # The additional services to spin up.
     # Default: []
     # Options:
@@ -238,7 +239,7 @@ DEFAULT_L1_ARGS = {
     # Default: 12
     "l1_seconds_per_slot": 2,
     # The amount of ETH sent to the admin, sequence, aggregator, sequencer and other chosen addresses.
-    "l1_funding_amount": "1000000ether",
+    "l1_funding_amount": "0.5ether",
     # Default: 2
     "l1_participants_count": 1,
     # Whether to deploy https://github.com/AggLayer/lxly-bridge-and-call
@@ -272,7 +273,7 @@ DEFAULT_L2_ARGS = {
     # polycli wallet inspect --mnemonic '{{.l1_preallocated_mnemonic}}'
     "l2_accounts_to_fund": 10,
     # The amount of ETH sent to each of the prefunded l2 accounts.
-    "l2_funding_amount": "100ether",
+    "l2_funding_amount": "0.3ether",
     # Whether to deploy https://github.com/Arachnid/deterministic-deployment-proxy.
     # Not deploying this will may cause errors or short circuit other contract
     # deployments.
@@ -441,7 +442,7 @@ DEFAULT_ARGS = (
 # https://github.com/ethpandaops/optimism-package/blob/main/src/package_io/input_parser.star
 OP_ARTIFACTS_LOCATOR = "https://storage.googleapis.com/oplabs-contract-artifacts/artifacts-v1-02024c5a26c16fc1a5c716fff1c46b5bf7f23890d431bb554ddbad60971211d4.tar.gz"
 DEFAULT_OP_STACK_ARGS = {
-    "source": "github.com/agglayer/optimism-package/main.star@cc37713aff9c4955dd6975cdbc34072a1286754e",
+    "source": "github.com/fyInALT/agglayer-optimism-package/main.star@d89527fa08ed7fd4c73b13b40c8ca346741788e2",
     "predeployed_contracts": True,
     "chains": [
         {
