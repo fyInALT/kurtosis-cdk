@@ -26,6 +26,61 @@ args:
   # Note this will noticeably increase the deployment time because of the increased L1 finality.
   l1_seconds_per_slot: 2 # TEMPORARY - DO NOT MERGE
 
+  # The L1 engine to use, either "geth" or "anvil".
+  "l1_engine": "geth"
+
+  ## L1 Config
+  l1_chain_id: 31337
+  # 0xbf7Dd28Bb515B578D13ddd09d554450a4977Ef39
+  l1_preallocated_mnemonic: "illness busy since rocket twenty normal win trumpet movie shoe column undo"
+  # cast wallet private-key --mnemonic $l1_preallocated_mnemonic
+  l1_preallocated_private_key: "0x34daaa6870164efbb1df1615e3074623f1b9644ba6889ba2ed98b129b525f66b"
+  l1_funding_amount: 0.5ether
+  # TODO: Configure the L1 RPC URLs to be valid Sepolia endpoints.
+  l1_rpc_url: http://10.1.1.39:8545
+  l1_ws_url: ws://10.1.1.39:8546
+  l1_beacon_url: http://10.1.1.39:3500
+
+  ## L2 Config
+  # TODO: Create a new mnemonic seed phrase to derive L2 application keys.
+  #enroll kiwi achieve interest blur chef universe mirror poet minute inhale notable  
+  zkevm_l2_sequencer_address: 0x355790c7Adc67dDb6f992971aa2aF44900CcC8F2
+  zkevm_l2_sequencer_private_key: 0x5312a3c479aa08c8c40dabad11b699c2e7938045562e5a25510857b6405fb28a
+
+  zkevm_l2_aggregator_address: 0x076e84DF61312A0EB57B038704c0ddD3a4b2690C
+  zkevm_l2_aggregator_private_key: 0x58150eb6f40bb4a4135d7f6d45e381fb82b3134c9d909f6b56de262cad723295
+
+  zkevm_l2_claimtxmanager_address: 0x7d50424B86227DFAD4647477d8252C09336003E6
+  zkevm_l2_claimtxmanager_private_key: 0x7e9a1eefbf8e9338073c18067533b027f72565356ad7953ff4d60aa2cf30c21b
+
+  zkevm_l2_timelock_address: 0x7B8Cf7Bfcf75945DB4e09f4F1b6046f28faa78d2
+  zkevm_l2_timelock_private_key: 0x35113640ce4b4a2b3e58d268e2b9f1a0219fe04045bf3b673d175327fb62b1ac
+
+  zkevm_l2_admin_address: 0xc2Bd478401B57f66090A4Ec5A9730cB154B4eE15
+  zkevm_l2_admin_private_key: 0x0c3d1ebbb161fe7b2740e911250389a3de3a94d89d6c60b1329f2eacfd2abd13
+
+  zkevm_l2_loadtest_address: 0x040DB08B6FcFfc93617688cD876478dfD4f3f7D4
+  zkevm_l2_loadtest_private_key: 0xb64570357402171857b9ab8a5e4ebc00e40784941c9e1ae61cdeae9fa88445ed
+
+  zkevm_l2_agglayer_address: 0x107EC2710d221186AFA2a30302A8C8B3B24367a3
+  zkevm_l2_agglayer_private_key: 0xcff1cc6ceab82b40c1c65cd12664c93d62ed6760f8de28b4df57b1bfdf614135
+
+  zkevm_l2_dac_address: 0xA3c676E5914897dCCA548A752c0B245fCEf51511
+  zkevm_l2_dac_private_key: 0x0ce8f8f2e621fce4148847464e22874f04166969319728dadc2962907f315ebf
+
+  zkevm_l2_proofsigner_address: 0x85c06F2FDe4D0E7FF5a9E268E749C4d4c0B2a6D0
+  zkevm_l2_proofsigner_private_key: 0x33f28c116d3352caca458522b8ed1f24a56910b5825a1179780605b2c9afd446
+
+  # l1testing
+  zkevm_l2_l1testing_address: 0x3F6AF051AB0bA981A97b5B974CF8f84E1258B37C
+  zkevm_l2_l1testing_private_key: 0x360edfa1bb7a89bd5e2de9831fffa27d00f1dcd6ed21957a5f687e20d68f033a
+  # aggoracle
+  zkevm_l2_aggoracle_address: 0x642887a92759B55e3B504489A26056457626b5d0
+  zkevm_l2_aggoracle_private_key: 0xaf3a1854ff9e949f343ffb3537a24ecca148fb6f08c7300db57d211999b998fa
+  # sovereignadmin
+  zkevm_l2_sovereignadmin_address: 0x81273cCe45877904369E2152BAD7216e13dEF7A7
+  zkevm_l2_sovereignadmin_private_key: 0xf53c6a7460045e34945fd8f0213b6b9f102ffe08b32ece6930183eaa85352b2f
+
   additional_services:
     - bridge_spammer
 
