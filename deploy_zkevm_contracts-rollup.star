@@ -92,12 +92,6 @@ def run(plan, args, deployment_stages, op_stack_args):
         )
         artifact_paths.append(
             {
-                "name": "combined-001.json",
-                "file": "./templates/contract-deploy/combined-001.json",
-            }
-        )
-        artifact_paths.append(
-            {
                 "name": "dynamic-" + args["chain_name"] + "-conf.json",
                 "file": "./templates/contract-deploy/dynamic-"
                 + args["chain_name"]

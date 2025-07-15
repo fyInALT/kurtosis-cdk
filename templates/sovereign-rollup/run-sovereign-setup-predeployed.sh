@@ -5,6 +5,11 @@ pushd /opt/zkevm-contracts || exit 1
 
 ts=$(date +%s)
 
+sed -i 's#http://127.0.0.1:8545#{{.l1_rpc_url}}#' hardhat.config.ts
+
+# Copy the updated combined.json to a new file with the deployment suffix
+cp "/opt/zkevm/combined.json" "/opt/zkevm/combined{{.deployment_suffix}}.json"
+
 # Extract the rollup manager address from the JSON file. .zkevm_rollup_manager_address is not available at the time of importing this script.
 # So a manual extraction of polygonRollupManagerAddress is done here.
 # Even with multiple op stack deployments, the rollup manager address can be retrieved from combined{{.deployment_suffix}}.json because it must be constant.
@@ -46,6 +51,7 @@ cp /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup_output_*.json /o
 else
 # In the case for PP deployments without OP-Succinct, use the 4_createRollup.ts script instead of the createNewRollup.ts tool.
 cp /opt/contract-deploy/create_new_rollup.json /opt/zkevm-contracts/deployment/v2/create_rollup_parameters.json
+cp /opt/contract-deploy/deploy_output.json /opt/zkevm-contracts/deployment/v2/deploy_output.json
 npx hardhat run deployment/v2/4_createRollup.ts --network localhost 2>&1 | tee 05_create_sovereign_rollup.out
 fi
 

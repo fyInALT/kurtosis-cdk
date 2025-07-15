@@ -6,6 +6,8 @@ pushd /opt/zkevm-contracts || exit 1
 # FIXME Just in case for now... ideally we don't need this but the base image is hacky right now
 git config --global --add safe.directory /opt/zkevm-contracts
 
+sed -i 's#http://127.0.0.1:8545#{{.l1_rpc_url}}#' hardhat.config.ts
+
 # Extract the rollup manager address from the JSON file. .zkevm_rollup_manager_address is not available at the time of importing this script.
 # So a manual extraction of polygonRollupManagerAddress is done here.
 # Even with multiple op stack deployments, the rollup manager address can be retrieved from combined{{.deployment_suffix}}.json because it must be constant.
