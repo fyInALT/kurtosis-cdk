@@ -106,6 +106,12 @@ def run(plan, args, deployment_stages, op_stack_args):
                 + "-allocs.json",
             }
         )
+        artifact_paths.append(
+            {
+                "name": "deploy_output.json",
+                "file": "./templates/contract-deploy/deploy_output.json",
+            }
+        )
 
     # Retrieve vkeys and vkey selectors from the binaries.
     agglayer_image = args.get("agglayer_image")

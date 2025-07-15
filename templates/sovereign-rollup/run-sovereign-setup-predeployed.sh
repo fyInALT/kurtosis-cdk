@@ -19,6 +19,9 @@ rollup_manager_addr="$(jq -r '.polygonRollupManagerAddress' "/opt/zkevm/combined
 jq --arg rum "$rollup_manager_addr" '.rollupManagerAddress = $rum' /opt/contract-deploy/create_new_rollup.json > "/opt/contract-deploy/create_new_rollup${ts}.json"
 cp "/opt/contract-deploy/create_new_rollup${ts}.json" /opt/contract-deploy/create_new_rollup.json
 
+rollup_manager_addr="$(jq -r '.polygonRollupManagerAddress' "/opt/zkevm/combined{{.deployment_suffix}}.json")"
+sed -i "s|\"rollupManagerAddress\": \".*\"|\"rollupManagerAddress\":\"$rollup_manager_addr\"|" /opt/contract-deploy/create_new_rollup.json
+
 # Replace polygonRollupManagerAddress with the extracted address
 jq --arg rum "$rollup_manager_addr" '.polygonRollupManagerAddress = $rum' /opt/contract-deploy/add_rollup_type.json > "/opt/contract-deploy/add_rollup_type${ts}.json"
 cp "/opt/contract-deploy/add_rollup_type${ts}.json" /opt/contract-deploy/add_rollup_type.json
@@ -50,8 +53,10 @@ npx hardhat run ./tools/createNewRollup/createNewRollup.ts --network localhost 2
 cp /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup_output_*.json /opt/zkevm/create_rollup_output.json
 else
 # In the case for PP deployments without OP-Succinct, use the 4_createRollup.ts script instead of the createNewRollup.ts tool.
+cat /opt/contract-deploy/create_new_rollup.json
 cp /opt/contract-deploy/create_new_rollup.json /opt/zkevm-contracts/deployment/v2/create_rollup_parameters.json
 cp /opt/contract-deploy/deploy_output.json /opt/zkevm-contracts/deployment/v2/deploy_output.json
+cp /opt/contract-deploy/genesis.json /opt/zkevm-contracts/deployment/v2/genesis.json
 npx hardhat run deployment/v2/4_createRollup.ts --network localhost 2>&1 | tee 05_create_sovereign_rollup.out
 fi
 

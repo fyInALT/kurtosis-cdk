@@ -19,6 +19,12 @@ args:
   l1_ws_url: wss://eth-pos-devnet.alt.technology/ws 
   l1_beacon_url: https://eth-pos-devnet-beacon.alt.technology 
 
+  zkevm_rollup_chain_id: 2072138
+  deployment_suffix: "-013"
+  zkevm_rollup_id: 13
+  op_el_rpc_url: "http://op-el-1-op-geth-op-node-013:8545"
+  op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-013:8547"
+
   use_previously_deployed_contracts: true
 
   ## L2 Config
@@ -36,8 +42,8 @@ args:
   zkevm_l2_timelock_address: 0x7B8Cf7Bfcf75945DB4e09f4F1b6046f28faa78d2
   zkevm_l2_timelock_private_key: 0x35113640ce4b4a2b3e58d268e2b9f1a0219fe04045bf3b673d175327fb62b1ac
 
-  zkevm_l2_admin_address: 0xe3C806eF62c0de52f4Ca60993A60192a4bcfc8c6
-  zkevm_l2_admin_private_key: 0xb9996fc484a2d8bcec7320772ef8eef6655e088e37173f0d740bfed7bc88cdad
+  zkevm_l2_admin_address: 0xc2Bd478401B57f66090A4Ec5A9730cB154B4eE15
+  zkevm_l2_admin_private_key: 0x0c3d1ebbb161fe7b2740e911250389a3de3a94d89d6c60b1329f2eacfd2abd13
 
   zkevm_l2_loadtest_address: 0x040DB08B6FcFfc93617688cD876478dfD4f3f7D4
   zkevm_l2_loadtest_private_key: 0xb64570357402171857b9ab8a5e4ebc00e40784941c9e1ae61cdeae9fa88445ed
@@ -64,7 +70,7 @@ args:
 optimism_package:
   chains:
     - network_params:
-        name: "001"
-        network_id: "2371908"
+        name: "013"
+        network_id: "2072138"
         seconds_per_slot: 1
 
