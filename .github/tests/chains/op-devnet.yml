@@ -1,42 +1,38 @@
 # This args-file deploys the OP Succinct chain.
 deployment_stages:
-  deploy_op_succinct: true
   deploy_l1: false
 
 args:
-  consensus_contract_type: fep
-  # Using the network provers will use the real SP1 verifier contract which is also deployed together in the Kurtosis devnet.
-  # A mock verifier is used otherwise.
-  op_succinct_mock: true
-  # Enable the integration with the Agglayer
-  op_succinct_agglayer: true
-  # Proof type. Must match the verifier gateway contract type. Options: "plonk", "groth16", "compressed", "core"
-  op_succinct_agg_proof_mode: "compressed"
-  # The minimum interval in L2 blocks at which checkpoints must be submitted. An aggregation proof can be posted for any range larger than this interval.
-  op_succinct_submission_interval: "1"
-  # The maximum number of concurrent proof requests to send to the `op-succinct-server`
-  op_succinct_max_concurrent_proof_requests: "1"
-  # The maximum number of concurrent witness generation processes to run on the `op-succinct-server`
-  op_succinct_max_concurrent_witness_gen: "1"
-  # Size of the range proof.
-  op_succinct_range_proof_interval: "60"
-
-  # OP Networks rely on L1 blocks to have finalization on L2. This means if the L1 blocktime is very fast, OP Succinct proof requests will have to bundle many L1 blocks into a single proof.
-  # This will significantly increase cycles even if the L2 network is empty. Instead of having 2s, for OP Succinct deployments, we recommend 12s.
-  # Note this will noticeably increase the deployment time because of the increased L1 finality.
-  l1_seconds_per_slot: 2 # TEMPORARY - DO NOT MERGE
+  l1_seconds_per_slot: 2
 
   # The L1 engine to use, either "geth" or "anvil".
-  "l1_engine": "geth"
+  l1_engine: "geth"
+
+
+  # north consider ecology acid essay survey energy mention admit primary estate argue
+  # - Account 0:
+  # Address:     0xc1BB08a14D08D40E062CbFeD83F3A99B680F0e28
+  # Private key: 0xdfdd51802d77f554bc4ecab4b439930d3edf7a4d892c77bb7aa8c6afe6f6abde
+
+  # - Account 1:
+  # Address:     0x935B0224439C7980F7fA4c894E468d7B8aCb3E94
+  # Private key: 0xa7eae766bcd99a61d9aab9d231c98fafec5797cbaddd1bcc51316d164497b984
+
+  # - Account 2:
+  # Address:     0x9Ce70a124b0D0bB885446AE6Ef9633ad8EC255Ba
+  # Private key: 0x17d99b3c52cc26b9bf024ae769576685c3570fe4b53add2e928be3b1bc280abb
+
+  # - Account 3:
+  # Address:     0x7A2C9B0cAE7a4D9596991eEe002B03a089672025
+  # Private key: 0x8149de127bb4fd7689ab461a76de590cb705a3e7ab5b88edc3ccad914ee6e4f0
 
   ## L1 Config
   l1_chain_id: 31330
-  # 0xbf7Dd28Bb515B578D13ddd09d554450a4977Ef39
-  l1_preallocated_mnemonic: "illness busy since rocket twenty normal win trumpet movie shoe column undo"
+  # 0xc1BB08a14D08D40E062CbFeD83F3A99B680F0e28
+  l1_preallocated_mnemonic: "north consider ecology acid essay survey energy mention admit primary estate argue"
   # cast wallet private-key --mnemonic $l1_preallocated_mnemonic
-  l1_preallocated_private_key: "0x34daaa6870164efbb1df1615e3074623f1b9644ba6889ba2ed98b129b525f66b"
-  
-  l1_funding_amount: 15ether
+  l1_preallocated_private_key: "0xdfdd51802d77f554bc4ecab4b439930d3edf7a4d892c77bb7aa8c6afe6f6abde"
+  l1_funding_amount: 250ether
   l1_rpc_url: https://eth-pos-devnet.alt.technology  
   l1_ws_url: wss://eth-pos-devnet.alt.technology/ws 
   l1_beacon_url: https://eth-pos-devnet-beacon.alt.technology 
@@ -81,18 +77,10 @@ args:
   zkevm_l2_sovereignadmin_address: 0x81273cCe45877904369E2152BAD7216e13dEF7A7
   zkevm_l2_sovereignadmin_private_key: 0xf53c6a7460045e34945fd8f0213b6b9f102ffe08b32ece6930183eaa85352b2f
 
-  additional_services:
-    - bridge_spammer
-
 optimism_package:
   chains:
-    - proposer_params:
-        enabled: false
-      challenger_params:
-        enabled: false
-      network_params:
+    - network_params:
         name: "001"
-        network_id: "2151908"
+        network_id: "2251908"
         seconds_per_slot: 1
-  observability:
-    enabled: false
+

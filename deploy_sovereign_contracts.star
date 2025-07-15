@@ -93,7 +93,7 @@ def fund_addresses(plan, args, contract_addresses, rpc_url):
     env_vars = {
         "ADDRESSES_TO_FUND": contract_addresses_to_fund,
         "RPC_URL": rpc_url,
-        "L2_FUNDING_AMOUNT": args.get("l2_funding_amount", "0.3ether"),
+        "L2_FUNDING_AMOUNT": args.get("l2_funding_amount", "50ether"),
     }
 
     # Only set L1_PREALLOCATED_MNEMONIC if provided and not using the default RPC

@@ -81,7 +81,7 @@ if [[ -e "/opt/contract-deploy/genesis.json" && -e "/opt/contract-deploy/combine
     exit
 fi
 
-echo_ts "Waiting for the L1 RPC to be available"
+echo_ts "Waiting for the L1 RPC to be available $l1_rpc_url ${{.l1_rpc_url}}"
 wait_for_rpc_to_be_available "{{.l1_rpc_url}}"
 echo_ts "L1 RPC is now available"
 
