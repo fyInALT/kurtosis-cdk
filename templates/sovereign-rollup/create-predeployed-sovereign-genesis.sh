@@ -15,7 +15,9 @@ rollup_manager_addr="$(jq -r '.polygonRollupManagerAddress' "/opt/zkevm/combined
 chainID="$(jq -r '.chainID' "/opt/zkevm/create_rollup_parameters.json")"
 rollup_id="$(cast call "$rollup_manager_addr" "chainIDToRollupID(uint64)(uint32)" "$chainID" --rpc-url "{{.l1_rpc_url}}")"
 
-cp /opt/contract-deploy/genesis.json /opt/zkevm-contracts/deployment/v2/genesis.json
+if [[ -f "/opt/contract-deploy/genesis.json" ]]; then
+    cp /opt/contract-deploy/genesis.json /opt/zkevm-contracts/deployment/v2/genesis.json
+fi
 
 # Replace rollupManagerAddress with the extracted address
 sed -i "s|\"rollupManagerAddress\": \".*\"|\"rollupManagerAddress\":\"$rollup_manager_addr\"|" /opt/contract-deploy/create-genesis-sovereign-params.json
