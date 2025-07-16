@@ -5,6 +5,14 @@ pushd /opt/zkevm-contracts || exit 1
 
 ts=$(date +%s)
 
+echo_ts() {
+    green="\e[32m"
+    end_color="\e[0m"
+
+    timestamp=$(date +"[%Y-%m-%d %H:%M:%S]")
+    echo -e "$green$timestamp$end_color $1" >&2
+}
+
 sed -i 's#http://127.0.0.1:8545#{{.l1_rpc_url}}#' hardhat.config.ts
 
 # Copy the updated combined.json to a new file with the deployment suffix
@@ -41,23 +49,34 @@ cp /opt/zkevm-contracts/deployment/v2/genesis.json  /opt/zkevm-contracts/tools/c
 
 deployOPSuccinct="{{ .deploy_op_succinct }}"
 if [[ $deployOPSuccinct == true ]]; then
-rm /opt/zkevm-contracts/tools/addRollupType/add_rollup_type_output-*.json
-npx hardhat run tools/addRollupType/addRollupType.ts --network localhost 2>&1 | tee 06_create_rollup_type.out
-cp /opt/zkevm-contracts/tools/addRollupType/add_rollup_type_output-*.json /opt/zkevm/add_rollup_type_output.json
-rollup_type_id=$(jq -r '.rollupTypeID' /opt/zkevm/add_rollup_type_output.json)
-jq --arg rtid "$rollup_type_id"  '.rollupTypeId = $rtid' /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json > /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json.tmp
-mv /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json.tmp /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json
+    rm /opt/zkevm-contracts/tools/addRollupType/add_rollup_type_output-*.json
+    npx hardhat run tools/addRollupType/addRollupType.ts --network localhost 2>&1 | tee 06_create_rollup_type.out
+    cp /opt/zkevm-contracts/tools/addRollupType/add_rollup_type_output-*.json /opt/zkevm/add_rollup_type_output.json
+    rollup_type_id=$(jq -r '.rollupTypeID' /opt/zkevm/add_rollup_type_output.json)
+    jq --arg rtid "$rollup_type_id"  '.rollupTypeId = $rtid' /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json > /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json.tmp
+    mv /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json.tmp /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup.json
 
-rm /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup_output_*.json
-npx hardhat run ./tools/createNewRollup/createNewRollup.ts --network localhost 2>&1 | tee 07_create_sovereign_rollup.out
-cp /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup_output_*.json /opt/zkevm/create_rollup_output.json
+    rm /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup_output_*.json
+    npx hardhat run ./tools/createNewRollup/createNewRollup.ts --network localhost 2>&1 | tee 07_create_sovereign_rollup.out
+    cp /opt/zkevm-contracts/tools/createNewRollup/create_new_rollup_output_*.json /opt/zkevm/create_rollup_output.json
 else
-# In the case for PP deployments without OP-Succinct, use the 4_createRollup.ts script instead of the createNewRollup.ts tool.
-cat /opt/contract-deploy/create_new_rollup.json
-cp /opt/contract-deploy/create_new_rollup.json /opt/zkevm-contracts/deployment/v2/create_rollup_parameters.json
-cp /opt/contract-deploy/deploy_output.json /opt/zkevm-contracts/deployment/v2/deploy_output.json
-cp /opt/contract-deploy/genesis.json /opt/zkevm-contracts/deployment/v2/genesis.json
-npx hardhat run deployment/v2/4_createRollup.ts --network localhost 2>&1 | tee 05_create_sovereign_rollup.out
+    # In the case for PP deployments without OP-Succinct, use the 4_createRollup.ts script instead of the createNewRollup.ts tool.
+    cat /opt/contract-deploy/create_new_rollup.json
+    cp /opt/contract-deploy/create_new_rollup.json /opt/zkevm-contracts/deployment/v2/create_rollup_parameters.json
+
+    if [[ -f "/opt/contract-deploy/deploy_output.json" ]]; then
+        cp /opt/contract-deploy/deploy_output.json /opt/zkevm-contracts/deployment/v2/deploy_output.json
+    else
+        echo_ts "skip cp deployed deploy_output.json"
+    fi
+
+    if [[ -f "/opt/contract-deploy/genesis.json" ]]; then
+        cp /opt/contract-deploy/genesis.json /opt/zkevm-contracts/deployment/v2/genesis.json
+    else
+        echo_ts "skip cp deployed genesis.json"
+    fi
+
+    npx hardhat run deployment/v2/4_createRollup.ts --network localhost 2>&1 | tee 05_create_sovereign_rollup.out
 fi
 
 # Save Rollup Information to a file.

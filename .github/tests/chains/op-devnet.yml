@@ -37,6 +37,9 @@ args:
   l1_ws_url: wss://eth-pos-devnet.alt.technology/ws 
   l1_beacon_url: https://eth-pos-devnet-beacon.alt.technology 
 
+  # Should same as optimism_package config
+  zkevm_rollup_chain_id: 2251908
+
   ## L2 Config
   # TODO: Create a new mnemonic seed phrase to derive L2 application keys.
   #enroll kiwi achieve interest blur chef universe mirror poet minute inhale notable  
