@@ -26,11 +26,11 @@ args:
   l1_ws_url: wss://eth-pos-devnet.alt.technology/ws 
   l1_beacon_url: https://eth-pos-devnet-beacon.alt.technology 
 
-  zkevm_rollup_chain_id: 3100218
-  deployment_suffix: "-021"
-  zkevm_rollup_id: 9
-  op_el_rpc_url: "http://op-el-1-op-geth-op-node-021:8545"
-  op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-021:8547"
+  zkevm_rollup_chain_id: 3100268
+  deployment_suffix: "-026"
+  zkevm_rollup_id: 14
+  op_el_rpc_url: "http://op-el-1-op-geth-op-node-026:8545"
+  op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-026:8547"
 
   use_previously_deployed_contracts: true
 
@@ -75,9 +75,10 @@ args:
   zkevm_l2_sovereignadmin_private_key: 0xf53c6a7460045e34945fd8f0213b6b9f102ffe08b32ece6930183eaa85352b2f
 
 optimism_package:
+  no_boot_l2: true
   chains:
     - network_params:
-        name: "021"
-        network_id: "3100218"
+        name: "026"
+        network_id: "3100268"
         seconds_per_slot: 1
 
