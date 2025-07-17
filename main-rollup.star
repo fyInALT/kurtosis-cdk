@@ -71,11 +71,12 @@ def run(plan, args={}):
             )
 
             # Fund Kurtosis addresses on OP L2
-            l2_kurtosis_addresses = service_package.get_kurtosis_addresses(args)
+            if not deployment_stages.get("no_fund_l2_addresses", False):
+                l2_kurtosis_addresses = service_package.get_kurtosis_addresses(args)
 
-            deploy_sovereign_contracts_package.fund_addresses(
-                plan, args, l2_kurtosis_addresses, args["op_el_rpc_url"]
-            )
+                deploy_sovereign_contracts_package.fund_addresses(
+                    plan, args, l2_kurtosis_addresses, args["op_el_rpc_url"]
+                )
 
             if deployment_stages.get("deploy_op_succinct", False):
                 # Extract genesis to feed into evm-sketch-genesis
@@ -152,7 +153,7 @@ def run(plan, args={}):
 
 
     # Deploy AggKit infrastructure + Dedicated Bridge Service
-    if deployment_stages.get("deploy_optimism_rollup", False):
+    if deployment_stages.get("deploy_aggkit", False):
         plan.print("Deploying AggKit infrastructure")
         aggkit_package.run(
             plan,

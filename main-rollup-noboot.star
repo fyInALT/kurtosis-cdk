@@ -8,7 +8,7 @@ ethereum_package = import_module("./ethereum.star")
 
 # Main service packages.
 additional_services = import_module("./src/additional_services/launcher.star")
-agglayer_package = "./agglayer.star"
+agglayer_package = "./noboot/agglayer.star"
 cdk_bridge_infra_package = "./cdk_bridge_infra.star"
 cdk_central_environment_package = "./cdk_central_environment.star"
 cdk_erigon_package = "./cdk_erigon.star"

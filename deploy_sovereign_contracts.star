@@ -34,18 +34,32 @@ def init_rollup(plan, args, deployment_stages):
             ),
         )
     script = "/opt/contract-deploy/run-initialize-rollup.sh"
+    init_service_name = "contracts" + args["deployment_suffix"]
 
-    plan.exec(
-        description="Running rollup initialization",
-        service_name="contracts" + args["deployment_suffix"],
-        recipe=ExecRecipe(
-            command=[
-                "/bin/sh",
-                "-c",
-                "chmod +x {0} && {0}".format(script),
-            ]
-        ),
-    )
+    if deployment_stages.get("no_boot_l2", False):
+        plan.exec(
+            description="Running rollup initialization with no boot l2",
+            service_name=init_service_name,
+            recipe=ExecRecipe(
+                command=[
+                    "/bin/sh",
+                    "-c",
+                    "export NO_BOOT_L2=true && chmod +x {0} && {0}".format(script),
+                ]
+            ),
+        )
+    else:
+        plan.exec(
+            description="Running rollup initialization",
+            service_name=init_service_name,
+            recipe=ExecRecipe(
+                command=[
+                    "/bin/sh",
+                    "-c",
+                    "chmod +x {0} && {0}".format(script),
+                ]
+            ),
+        )
 
 
 def get_l2_oo_config(plan, args):

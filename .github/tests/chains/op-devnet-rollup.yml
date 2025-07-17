@@ -1,9 +1,16 @@
 # This args-file deploys the OP Succinct chain.
 deployment_stages:
   deploy_l1: false
+  deploy_agglayer: false
+  deploy_aggkit: false
+  deploy_databases: false
+  no_boot_l2: true
+  no_fund_l2_addresses: true
 
 args:
   l1_seconds_per_slot: 2
+
+  additional_services: []
 
   # The L1 engine to use, either "geth" or "anvil".
   l1_engine: "geth"
@@ -19,11 +26,11 @@ args:
   l1_ws_url: wss://eth-pos-devnet.alt.technology/ws 
   l1_beacon_url: https://eth-pos-devnet-beacon.alt.technology 
 
-  zkevm_rollup_chain_id: 3100148
-  deployment_suffix: "-014"
-  zkevm_rollup_id: 3
-  op_el_rpc_url: "http://op-el-1-op-geth-op-node-014:8545"
-  op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-014:8547"
+  zkevm_rollup_chain_id: 3100218
+  deployment_suffix: "-021"
+  zkevm_rollup_id: 9
+  op_el_rpc_url: "http://op-el-1-op-geth-op-node-021:8545"
+  op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-021:8547"
 
   use_previously_deployed_contracts: true
 
@@ -70,7 +77,7 @@ args:
 optimism_package:
   chains:
     - network_params:
-        name: "014"
-        network_id: "3100148"
+        name: "021"
+        network_id: "3100218"
         seconds_per_slot: 1
 

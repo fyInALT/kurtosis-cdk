@@ -4,6 +4,17 @@ set -e
 pushd /opt/zkevm-contracts || exit 1
 
 ts=$(date +%s)
+
+echo_ts() {
+    green="\e[32m"
+    end_color="\e[0m"
+
+    timestamp=$(date +"[%Y-%m-%d %H:%M:%S]")
+    echo -e "$green$timestamp$end_color $1" >&2
+}
+
+echo_ts "run initialize rollup, with NO_BOOT_L2: $NO_BOOT_L2"
+
 # The startingBlockNumber and sp1_starting_timestamp values in create_new_rollup.json file needs to be populated with the below commands.
 deployOPSuccinct="{{ .deploy_op_succinct }}"
 if [[ $deployOPSuccinct == true ]]; then
@@ -50,13 +61,19 @@ aggoracle_addr="{{.zkevm_l2_aggoracle_address}}"
 claimtxmanager_addr="{{.zkevm_l2_claimtxmanager_address}}"
 # claimtx_private_key="{{.zkevm_l2_claimtxmanager_private_key}}"
 
-rpc_url="{{.op_el_rpc_url}}"
-# This is the default prefunded account for the OP Network
-private_key=$(cast wallet private-key --mnemonic 'test test test test test test test test test test test junk')
+if [[ $NO_BOOT_L2 == true ]]; then
+    echo_ts "skip fund to l2 address: $bridge_admin_addr, $aggoracle_addr, $claimtxmanager_addr"
+else
+    echo_ts "fund to l2 address"
 
-cast send --legacy --value "{{.l2_funding_amount}}" --rpc-url $rpc_url --private-key "$private_key" $bridge_admin_addr
-cast send --legacy --value "{{.l2_funding_amount}}" --rpc-url $rpc_url --private-key "$private_key" $aggoracle_addr
-cast send --legacy --value "{{.l2_funding_amount}}" --rpc-url $rpc_url --private-key "$private_key" $claimtxmanager_addr
+    rpc_url="{{.op_el_rpc_url}}"
+    # This is the default prefunded account for the OP Network
+    private_key=$(cast wallet private-key --mnemonic 'test test test test test test test test test test test junk')
+
+    cast send --legacy --value "{{.l2_funding_amount}}" --rpc-url $rpc_url --private-key "$private_key" $bridge_admin_addr
+    cast send --legacy --value "{{.l2_funding_amount}}" --rpc-url $rpc_url --private-key "$private_key" $aggoracle_addr
+    cast send --legacy --value "{{.l2_funding_amount}}" --rpc-url $rpc_url --private-key "$private_key" $claimtxmanager_addr
+fi
 
 # Contract Deployment Step
 # cd /opt/zkevm-contracts || exit
@@ -251,7 +268,12 @@ check_deployed_contracts() {
 
 # Check deployed contracts
 check_deployed_contracts "$l1_contract_addresses" "{{.l1_rpc_url}}"
-check_deployed_contracts "$l2_contract_addresses" "{{.op_el_rpc_url}}"
+
+if [[ $NO_BOOT_L2 == true ]]; then
+    echo_ts "skip check_deployed_contracts: $l2_contract_addresses"
+else
+    check_deployed_contracts "$l2_contract_addresses" "{{.op_el_rpc_url}}"
+fi
 
 # Only set the aggchainVkey for the first rollup. Adding multiple aggchainVkeys of the same value will revert with "0x22a1bdc4" or "AggchainVKeyAlreadyExists()".
 rollupID=$(cast call "$rollup_manager_addr" "chainIDToRollupID(uint64)(uint32)" "{{.zkevm_rollup_chain_id}}" --rpc-url "{{.l1_rpc_url}}")
