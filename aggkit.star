@@ -33,33 +33,39 @@ def run(
             "RUST_BACKTRACE": "1",
         }
 
-        aggkit_prover = plan.add_service(
-            name="aggkit-prover" + args["deployment_suffix"],
-            config=ServiceConfig(
-                image=args["aggkit_prover_image"],
-                ports=ports,
-                public_ports=public_ports,
-                files={
-                    "/etc/aggkit": Directory(
-                        artifact_names=[
-                            aggkit_prover_config_artifact,
-                            evm_sketch_genesis_conf,
-                        ]
-                    ),
-                },
-                entrypoint=[
-                    "/usr/local/bin/aggkit-prover",
-                ],
-                env_vars=prover_env_vars,
-                cmd=["run", "--config-path", "/etc/aggkit/aggkit-prover-config.toml"],
-            ),
-        )
-        aggkit_prover_url = "{}:{}".format(
-            aggkit_prover.ip_address,
-            aggkit_prover.ports[
-                "grpc"
-            ].number,  # TODO: Check whether "grpc" or "api" is the correct port. If api is correct, we need to add it below.
-        )
+        aggkit_prover_url = "127.0.0.1:10000"
+
+        if deployment_stages.get("no_boot_services", False):
+            plan.print("env for aggkit-prover service: " + str(prover_env_vars))
+            plan.print("Skip deploy aggkit-prover service")
+        else:
+            aggkit_prover = plan.add_service(
+                name="aggkit-prover" + args["deployment_suffix"],
+                config=ServiceConfig(
+                    image=args["aggkit_prover_image"],
+                    ports=ports,
+                    public_ports=public_ports,
+                    files={
+                        "/etc/aggkit": Directory(
+                            artifact_names=[
+                                aggkit_prover_config_artifact,
+                                evm_sketch_genesis_conf,
+                            ]
+                        ),
+                    },
+                    entrypoint=[
+                        "/usr/local/bin/aggkit-prover",
+                    ],
+                    env_vars=prover_env_vars,
+                    cmd=["run", "--config-path", "/etc/aggkit/aggkit-prover-config.toml"],
+                ),
+            )
+            aggkit_prover_url = "{}:{}".format(
+                aggkit_prover.ip_address,
+                aggkit_prover.ports[
+                    "grpc"
+                ].number,  # TODO: Check whether "grpc" or "api" is the correct port. If api is correct, we need to add it below.
+            )
 
     db_configs = databases.get_db_configs(
         args["deployment_suffix"], args["sequencer_type"]
@@ -99,10 +105,13 @@ def run(
         args, aggkit_config_artifact, sovereign_genesis_artifact, keystore_artifacts
     )
 
-    plan.add_services(
-        configs=aggkit_configs,
-        description="Starting the cdk aggkit components",
-    )
+    if deployment_stages.get("no_boot_services", False):
+        plan.print("Skip deploy aggkit service")
+    else:
+        plan.add_services(
+            configs=aggkit_configs,
+            description="Starting the cdk aggkit components",
+        )
 
     # Start the bridge service.
     bridge_config_artifact = create_bridge_config_artifact(
@@ -116,10 +125,13 @@ def run(
     bridge_service_config = zkevm_bridge_package.create_bridge_service_config(
         args, bridge_config_artifact, keystore_artifacts.claimtx
     )
-    plan.add_service(
-        name="zkevm-bridge-service" + args["deployment_suffix"],
-        config=bridge_service_config,
-    )
+    if deployment_stages.get("no_boot_services", False):
+        plan.print("Skip deploy zkevm bridge service")
+    else:
+        plan.add_service(
+            name="zkevm-bridge-service" + args["deployment_suffix"],
+            config=bridge_service_config,
+        )
 
 
 def get_keystores_artifacts(plan, args):

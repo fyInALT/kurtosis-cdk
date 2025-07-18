@@ -1,10 +1,11 @@
 # This args-file deploys the OP Succinct chain.
 deployment_stages:
   deploy_l1: false
-  deploy_agglayer: false
-  deploy_aggkit: false
-  deploy_databases: false
+  deploy_agglayer: true
+  deploy_aggkit: true
+  deploy_databases: true
   no_boot_l2: true
+  no_boot_services: true
   no_fund_l2_addresses: true
 
 args:
@@ -26,11 +27,11 @@ args:
   l1_ws_url: wss://eth-pos-devnet.alt.technology/ws 
   l1_beacon_url: https://eth-pos-devnet-beacon.alt.technology 
 
-  zkevm_rollup_chain_id: 3100268
-  deployment_suffix: "-026"
-  zkevm_rollup_id: 14
-  op_el_rpc_url: "http://op-el-1-op-geth-op-node-026:8545"
-  op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-026:8547"
+  zkevm_rollup_chain_id: 3100308
+  deployment_suffix: "-030"
+  zkevm_rollup_id: 17
+  # op_el_rpc_url: "http://op-el-1-op-geth-op-node-028:8545"
+  # op_cl_rpc_url: "http://op-cl-1-op-node-op-geth-028:8547"
 
   use_previously_deployed_contracts: true
 
@@ -78,7 +79,7 @@ optimism_package:
   no_boot_l2: true
   chains:
     - network_params:
-        name: "026"
-        network_id: "3100268"
+        name: "030"
+        network_id: "3100308"
         seconds_per_slot: 1
 
