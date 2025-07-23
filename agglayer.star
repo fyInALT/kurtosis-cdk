@@ -16,29 +16,34 @@ def run(plan, deployment_stages, args, contract_setup_addresses):
         prover_env_vars["SP1_PRIVATE_KEY"] = args["sp1_prover_key"]
         prover_env_vars["NETWORK_RPC_URL"] = args["agglayer_prover_network_url"]
 
-    agglayer_prover = plan.add_service(
-        name="agglayer-prover",
-        config=ServiceConfig(
-            image=args["agglayer_image"],
-            ports=ports,
-            public_ports=public_ports,
-            files={
-                "/etc/zkevm": Directory(
-                    artifact_names=[
-                        agglayer_prover_config_artifact,
-                    ]
-                ),
-            },
-            entrypoint=[
-                "/usr/local/bin/agglayer",
-            ],
-            env_vars=prover_env_vars,
-            cmd=["prover", "--cfg", "/etc/zkevm/agglayer-prover-config.toml"],
-        ),
-    )
-    agglayer_prover_url = "http://{}:{}".format(
-        agglayer_prover.ip_address, agglayer_prover.ports["api"].number
-    )
+    agglayer_prover_url = "http://127.0.0.1:1000"
+
+    if deployment_stages.get("no_boot_services", False):
+        plan.print("Skip deploy agglayer-prover service")
+    else:
+        agglayer_prover = plan.add_service(
+            name="agglayer-prover",
+            config=ServiceConfig(
+                image=args["agglayer_image"],
+                ports=ports,
+                public_ports=public_ports,
+                files={
+                    "/etc/zkevm": Directory(
+                        artifact_names=[
+                            agglayer_prover_config_artifact,
+                        ]
+                    ),
+                },
+                entrypoint=[
+                    "/usr/local/bin/agglayer",
+                ],
+                env_vars=prover_env_vars,
+                cmd=["prover", "--cfg", "/etc/zkevm/agglayer-prover-config.toml"],
+            ),
+        )
+        agglayer_prover_url = "http://{}:{}".format(
+            agglayer_prover.ip_address, agglayer_prover.ports["api"].number
+        )
 
     # Deploy agglayer service.
     agglayer_config_artifact = create_agglayer_config_artifact(
@@ -50,27 +55,30 @@ def run(plan, deployment_stages, args, contract_setup_addresses):
         src="/opt/zkevm/agglayer.keystore",
     )
 
-    (ports, public_ports) = get_agglayer_ports(args)
-    plan.add_service(
-        name="agglayer",
-        config=ServiceConfig(
-            image=args["agglayer_image"],
-            ports=ports,
-            public_ports=public_ports,
-            files={
-                "/etc/zkevm": Directory(
-                    artifact_names=[
-                        agglayer_config_artifact,
-                        agglayer_keystore_artifact,
-                    ]
-                ),
-            },
-            entrypoint=[
-                "/usr/local/bin/agglayer",
-            ],
-            cmd=["run", "--cfg", "/etc/zkevm/agglayer-config.toml"],
-        ),
-    )
+    if deployment_stages.get("no_boot_services", False):
+        plan.print("Skip deploy agglayer service")
+    else:
+        (ports, public_ports) = get_agglayer_ports(args)
+        plan.add_service(
+            name="agglayer",
+            config=ServiceConfig(
+                image=args["agglayer_image"],
+                ports=ports,
+                public_ports=public_ports,
+                files={
+                    "/etc/zkevm": Directory(
+                        artifact_names=[
+                            agglayer_config_artifact,
+                            agglayer_keystore_artifact,
+                        ]
+                    ),
+                },
+                entrypoint=[
+                    "/usr/local/bin/agglayer",
+                ],
+                cmd=["run", "--cfg", "/etc/zkevm/agglayer-config.toml"],
+            ),
+        )
 
 
 def create_agglayer_prover_config_artifact(plan, args):

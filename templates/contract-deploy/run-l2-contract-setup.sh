@@ -126,7 +126,7 @@ fi
 if [[ "{{.l1_deploy_lxly_bridge_and_call}}" ]]; then
     echo_ts "Deploying lxly bridge and call on l1"
     export DEPLOYER_PRIVATE_KEY="$l1_private_key"
-    forge script script/DeployInitBridgeAndCall.s.sol --rpc-url "{{.l1_rpc_url}}" --legacy --broadcast
+    forge script script/DeployInitBridgeAndCall.s.sol --rpc-url "{{.l1_rpc_url}}" --broadcast
 else
     echo_ts "Skipping deployment of lxly bridge and call on l1"
 fi
@@ -135,7 +135,7 @@ fi
 if [[ "{{.l2_deploy_lxly_bridge_and_call}}" ]]; then
     echo_ts "Deploying lxly bridge and call on l2"
     export DEPLOYER_PRIVATE_KEY="{{.zkevm_l2_admin_private_key}}"
-    forge script script/DeployInitBridgeAndCall.s.sol --rpc-url "$l2_rpc_url" --legacy --broadcast
+    forge script script/DeployInitBridgeAndCall.s.sol --rpc-url "$l2_rpc_url" --broadcast
 else
     echo_ts "Skipping deployment of lxly bridge and call on l2"
 fi

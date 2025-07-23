@@ -80,7 +80,7 @@ if [[ -e "/opt/contract-deploy/genesis.json" && -e "/opt/contract-deploy/combine
     exit
 fi
 
-echo_ts "Waiting for the L1 RPC to be available"
+echo_ts "Waiting for the L1 RPC to be available $l1_rpc_url ${{.l1_rpc_url}}"
 wait_for_rpc_to_be_available "{{.l1_rpc_url}}"
 echo_ts "L1 RPC is now available"
 
@@ -290,20 +290,26 @@ fi
 
 # The sequencer needs to pay POL when it sequences batches.
 # This gets refunded when the batches are verified on L1.
-# In order for this to work t,he rollup address must be approved to transfer the sequencers' POL tokens.
+# In order for this to work the rollup address must be approved to transfer the sequencers' POL tokens.
 echo_ts "Minting POL token on L1 for the sequencer"
 cast send \
     --private-key "{{.zkevm_l2_sequencer_private_key}}" \
-    --legacy \
     --rpc-url "{{.l1_rpc_url}}" \
     "$(jq -r '.polTokenAddress' combined.json)" \
     'mint(address,uint256)' \
     "{{.zkevm_l2_sequencer_address}}" 1000000000000000000000000000
 
+rollup_manager_addr=$(jq -r '.polygonRollupManagerAddress' /opt/zkevm/combined.json)
+rollup_address=$(cast call --json --rpc-url "{{.l1_rpc_url}}" "$rollup_manager_addr" 'rollupIDToRollupData(uint32)(address,uint64,address,uint64,bytes32,uint64,uint64,uint64,uint64,uint64,uint64,uint8)' "{{.zkevm_rollup_id}}" | jq -r '.[0]')
+
+
+echo_ts "rollupAddress $(jq -r '.rollupAddress' combined.json)"
+echo_ts "polTokenAddress $(jq -r '.polTokenAddress' combined.json)"
+echo_ts "rollup_address $rollup_address"
+
 echo_ts "Approving the rollup address to transfer POL tokens on behalf of the sequencer"
 cast send \
     --private-key "{{.zkevm_l2_sequencer_private_key}}" \
-    --legacy \
     --rpc-url "{{.l1_rpc_url}}" \
     "$(jq -r '.polTokenAddress' combined.json)" \
     'approve(address,uint256)(bool)' \
@@ -334,16 +340,22 @@ cast send \
 # Deploy deterministic proxy.
 # https://github.com/Arachnid/deterministic-deployment-proxy
 # You can find the `signer_address`, `transaction` and `deployer_address` by looking at the README.
-echo_ts "Deploying deterministic deployment proxy"
+# TODO: send tx
 signer_address="0x3fab184622dc19b6109349b94811493bf2a45362"
 transaction="0xf8a58085174876e800830186a08080b853604580600e600039806000f350fe7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf31ba02222222222222222222222222222222222222222222222222222222222222222a02222222222222222222222222222222222222222222222222222222222222222"
 deployer_address="0x4e59b44847b379578588920ca78fbf26c0b4956c"
-cast send \
-    --rpc-url "{{.l1_rpc_url}}" \
-    --mnemonic "{{.l1_preallocated_mnemonic}}" \
-    --value "0.01ether" \
-    "$signer_address"
-cast publish --rpc-url "{{.l1_rpc_url}}" "$transaction"
+if [[ $(cast code --rpc-url "{{.l1_rpc_url}}" $deployer_address) == "0x" ]]; then
+    echo_ts "Deploying deterministic deployment proxy"
+    cast send \
+        --rpc-url "{{.l1_rpc_url}}" \
+        --mnemonic "{{.l1_preallocated_mnemonic}}" \
+        --value "0.01ether" \
+        "$signer_address"
+    cast publish --rpc-url "{{.l1_rpc_url}}" "$transaction"
+else
+    echo_ts "Skip Deploying deterministic deployment proxy"
+fi
+
 if [[ $(cast code --rpc-url "{{.l1_rpc_url}}" $deployer_address) == "0x" ]]; then
     echo_ts "No code at deployer address: $deployer_address"
     exit 1

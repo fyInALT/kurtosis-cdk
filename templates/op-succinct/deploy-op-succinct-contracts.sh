@@ -28,7 +28,6 @@ function deploy_create2() {
     fi
 
     cast send \
-         --legacy \
          --rpc-url "{{.l1_rpc_url}}" \
          --mnemonic "{{.l1_preallocated_mnemonic}}" \
          --value "$gas_cost" \
