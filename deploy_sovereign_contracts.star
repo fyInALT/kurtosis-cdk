@@ -34,18 +34,32 @@ def init_rollup(plan, args, deployment_stages):
             ),
         )
     script = "/opt/contract-deploy/run-initialize-rollup.sh"
+    init_service_name = "contracts" + args["deployment_suffix"]
 
-    plan.exec(
-        description="Running rollup initialization",
-        service_name="contracts" + args["deployment_suffix"],
-        recipe=ExecRecipe(
-            command=[
-                "/bin/sh",
-                "-c",
-                "chmod +x {0} && {0}".format(script),
-            ]
-        ),
-    )
+    if deployment_stages.get("no_boot_l2", False):
+        plan.exec(
+            description="Running rollup initialization with no boot l2",
+            service_name=init_service_name,
+            recipe=ExecRecipe(
+                command=[
+                    "/bin/sh",
+                    "-c",
+                    "export NO_BOOT_L2=true && chmod +x {0} && {0}".format(script),
+                ]
+            ),
+        )
+    else:
+        plan.exec(
+            description="Running rollup initialization",
+            service_name=init_service_name,
+            recipe=ExecRecipe(
+                command=[
+                    "/bin/sh",
+                    "-c",
+                    "chmod +x {0} && {0}".format(script),
+                ]
+            ),
+        )
 
 
 def get_l2_oo_config(plan, args):
@@ -93,12 +107,13 @@ def fund_addresses(plan, args, contract_addresses, rpc_url):
     env_vars = {
         "ADDRESSES_TO_FUND": contract_addresses_to_fund,
         "RPC_URL": rpc_url,
-        "L2_FUNDING_AMOUNT": args.get("l2_funding_amount", "0.1ether"),
+        "L2_FUNDING_AMOUNT": args.get("l2_funding_amount", "50ether"),
+        "DEPLOYMENT_SUFFIX": args["deployment_suffix"],
     }
 
     # Only set L1_PREALLOCATED_MNEMONIC if provided and not using the default RPC
     if (
-        rpc_url != "http://op-el-1-op-geth-op-node-001:8545"
+        rpc_url != "http://op-el-1-op-geth-op-node" + args["deployment_suffix"] + ":8545"
         and "l1_preallocated_mnemonic" in args
     ):
         env_vars["L1_PREALLOCATED_MNEMONIC"] = args["l1_preallocated_mnemonic"]
